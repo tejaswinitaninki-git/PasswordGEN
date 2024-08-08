@@ -1,0 +1,41 @@
+function generatePassword() {
+  const length = document.getElementById('passwordLength').value;
+  const includeUppercase = document.getElementById('includeUppercase').checked;
+  const includeLowercase = document.getElementById('includeLowercase').checked;
+  const includeNumbers = document.getElementById('includeNumbers').checked;
+  const includeSymbols = document.getElementById('includeSymbols').checked;
+
+  const uppercaseLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const lowercaseLetters = 'abcdefghijklmnopqrstuvwxyz';
+  const numbers = '0123456789';
+  const symbols = '!@#$%^&*-_+=[]{}~`';
+
+  let characterPool = '';
+  if (includeUppercase) characterPool += uppercaseLetters;
+  if (includeLowercase) characterPool += lowercaseLetters;
+  if (includeNumbers) characterPool += numbers;
+  if (includeSymbols) characterPool += symbols;
+
+  let password = '';
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * characterPool.length);
+    password += characterPool[randomIndex];
+  }
+
+  document.getElementById('generatedPassword').value = password;
+  assessStrength(password);
+}
+
+function assessStrength(password) {
+  let strength = 'Very Weak';
+  if (password.length > 8 && /[A-Z]/.test(password) && /[a-z]/.test(password) && /[0-9]/.test(password) && /[!@#$%^&*-_+=\[\]{}~`]/.test(password)) {
+    strength = 'Very Strong';
+  } else if (password.length > 8 && /[A-Z]/.test(password) && /[a-z]/.test(password) && /[0-9]/.test(password)) {
+    strength = 'Strong';
+  } else if (password.length > 6 && /[A-Z]/.test(password) && /[a-z]/.test(password)) {
+    strength = 'Medium';
+  } else if (password.length > 4) {
+    strength = 'Weak';
+  }
+  document.getElementById('passwordStrength').innerText = 'Strength: ' + strength;
+}
