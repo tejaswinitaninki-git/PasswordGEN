@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Password Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #add8e6; /* Light blue background color */
+      margin: 0;
+    }
+    .container {
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      width: 300px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 10px;
+    }
+    input[type="number"], input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 10px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .checkbox-group {
+      display: flex;
+      flex-direction: column;
+    }
+    .strength {
+      text-align: center;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Password Generator</h2>
+  <div class="form-group">
+    <label for="passwordLength">Password Length:</label>
+    <input type="number" id="passwordLength" value="12" min="1" max="100">
+  </div>
+  <div class="form-group checkbox-group">
+    <label><input type="checkbox" id="includeUppercase"> Include Uppercase Letters</label>
+    <label><input type="checkbox" id="includeLowercase" checked> Include Lowercase Letters</label>
+    <label><input type="checkbox" id="includeNumbers"> Include Numbers</label>
+    <label><input type="checkbox" id="includeSymbols"> Include Symbols</label>
+  </div>
+  <button onclick="generatePassword()">Generate Password</button>
+  <div class="form-group">
+    <label for="generatedPassword">Generated Password:</label>
+    <input type="text" id="generatedPassword" readonly>
+  </div>
+  <div class="strength" id="passwordStrength">Strength: N/A</div>
+</div>
+
+<script>
+  function generatePassword() {
+    const length = document.getElementById('passwordLength').value;
+    const includeUppercase = document.getElementById('includeUppercase').checked;
+    const includeLowercase = document.getElementById('includeLowercase').checked;
+    const includeNumbers = document.getElementById('includeNumbers').checked;
+    const includeSymbols = document.getElementById('includeSymbols').checked;
+
+    const uppercaseLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const lowercaseLetters = 'abcdefghijklmnopqrstuvwxyz';
+    const numbers = '0123456789';
+    const symbols = '!@#$%^&*-_+=[]{}~`';
+
+    let characterPool = '';
+    if (includeUppercase) characterPool += uppercaseLetters;
+    if (includeLowercase) characterPool += lowercaseLetters;
+    if (includeNumbers) characterPool += numbers;
+    if (includeSymbols) characterPool += symbols;
+
+    let password = '';
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * characterPool.length);
+      password += characterPool[randomIndex];
+    }
+
+    document.getElementById('generatedPassword').value = password;
+    assessStrength(password);
+  }
+
+  function assessStrength(password) {
+    let strength = 'Very Weak';
+    if (password.length > 8 && /[A-Z]/.test(password) && /[a-z]/.test(password) && /[0-9]/.test(password) && /[!@#$%^&*-_+=\[\]{}~`]/.test(password)) {
+      strength = 'Very Strong';
+    } else if (password.length > 8 && /[A-Z]/.test(password) && /[a-z]/.test(password) && /[0-9]/.test(password)) {
+      strength = 'Strong';
+    } else if (password.length > 6 && /[A-Z]/.test(password) && /[a-z]/.test(password)) {
+      strength = 'Medium';
+    } else if (password.length > 4) {
+      strength = 'Weak';
+    }
+    document.getElementById('passwordStrength').innerText = 'Strength: ' + strength;
+  }
+</script>
+
+</body>
+</html>
